@@ -1,0 +1,13 @@
+# user-specific properties for unit tests
+# naming convention is <test class name>.<member name>
+
+# This file is imported directly into the build.xml before being re-written out as
+# unit-tests.properties.
+# the prefix junit. is used to allow easy filtering when writing out the properties
+# at jar creation time.
+
+junit.AS400ProducerExamples.baseDir=${build.dir}/example-xml
+junit.AS400ConsumerExamples.baseDir=${build.dir}/example-xml
+junit.AS400ServiceExamples.baseDir=${build.dir}/example-xml
+
+junit.tmp.dir=${build.dir}/junit
