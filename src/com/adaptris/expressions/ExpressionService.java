@@ -72,7 +72,7 @@ public class ExpressionService extends ServiceImp {
   
   protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
 
-  private DataOutputParameter<String> output;
+  private DataOutputParameter<String> result;
   
   private String algorithm;
   
@@ -98,10 +98,10 @@ public class ExpressionService extends ServiceImp {
   
       interpreter.eval("result = (" + this.getAlgorithm() + ")");
       
-      String result = String.format("%.0f", interpreter.get("result"));
-      log.trace(this.getAlgorithm() + " evaluated to :" + result);
+      String stringResult = String.format("%.0f", interpreter.get("result"));
+      log.trace(this.getAlgorithm() + " evaluated to :" + stringResult);
       
-      output.insert(result, msg);
+      result.insert(stringResult, msg);
     } catch (InterlokException | EvalError  ex) {
       throw new ServiceException(ex);
     }
@@ -119,12 +119,12 @@ public class ExpressionService extends ServiceImp {
   protected void closeService() {
   }
 
-  public DataOutputParameter<String> getOutput() {
-    return output;
+  public DataOutputParameter<String> getResult() {
+    return result;
   }
 
-  public void setOutput(DataOutputParameter<String> output) {
-    this.output = output;
+  public void setResult(DataOutputParameter<String> output) {
+    this.result = output;
   }
 
   public List<DataInputParameter<String>> getParameters() {

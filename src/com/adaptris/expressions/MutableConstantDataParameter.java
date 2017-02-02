@@ -3,6 +3,9 @@ package com.adaptris.expressions;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.interlok.InterlokException;
@@ -24,9 +27,11 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @ComponentProfile(summary = "A preconfigured value that may change during message processing.", tag = "parameter")
 public class MutableConstantDataParameter implements DataDestination<String, String> {
   
+  protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
+  
   private static Map<String, String> mutableValues;
   
-  private String constantValue;
+  private String startingValue;
   
   private String name;
 
@@ -38,8 +43,9 @@ public class MutableConstantDataParameter implements DataDestination<String, Str
   public String extract(InterlokMessage m) throws InterlokException {
     String returnedValue = mutableValues.get(this.getName());
     if(returnedValue == null) {
-      mutableValues.put(this.getName(), this.getConstantValue());
-      returnedValue = this.getConstantValue();
+      mutableValues.put(this.getName(), this.getStartingValue());
+      returnedValue = this.getStartingValue();
+      log.trace("Mutable constant ({}) has been updated to value {}.", this.getName(), returnedValue);
     }
     
     return returnedValue;
@@ -48,14 +54,15 @@ public class MutableConstantDataParameter implements DataDestination<String, Str
   @Override
   public void insert(String data, InterlokMessage msg) throws InterlokException {
     mutableValues.put(this.getName(), data);
+    log.trace("Mutable constant ({}) has been updated to value {}.", this.getName(), data);
   }
 
-  public String getConstantValue() {
-    return constantValue;
+  public String getStartingValue() {
+    return startingValue;
   }
 
-  public void setConstantValue(String constantValue) {
-    this.constantValue = constantValue;
+  public void setStartingValue(String constantValue) {
+    this.startingValue = constantValue;
   }
 
   public static Map<String, String> getMutableValues() {
