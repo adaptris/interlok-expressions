@@ -1,5 +1,6 @@
 package com.adaptris.expressions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import com.adaptris.core.CoreException;
 import com.adaptris.core.Service;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.ServiceImp;
+import com.adaptris.core.common.MetadataDataOutputParameter;
 import com.adaptris.interlok.InterlokException;
 import com.adaptris.interlok.config.DataInputParameter;
 import com.adaptris.interlok.config.DataOutputParameter;
@@ -29,7 +31,8 @@ import bsh.Interpreter;
  * To specify the parameters for the algorithm simply use as many {@link DataInputParameter}'s as required.
  * </p>
  * <p>
- * To choose where to set the result of the algorithm use any single {@link DataOutputParameter}.
+ * To choose where to set the result of the algorithm use any single {@link DataOutputParameter}.<br />
+ * The default result of the expression will be a new metadata item with the key "expressionResult".
  * </p>
  * <p>
  * When configuring your algorithm you can specify parameters using the dollar + index (starting at 1) of the configured input parameter; "$1, $2, $3..."
@@ -71,12 +74,19 @@ import bsh.Interpreter;
 public class ExpressionService extends ServiceImp {
   
   protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
+  
+  private static final String DEFAULT_RESULT_METADATA_KEY = "expressionResult";
 
   private DataOutputParameter<String> result;
   
   private String algorithm;
   
   private List<DataInputParameter<String>> parameters;
+  
+  public ExpressionService() {
+	this.setParameters(new ArrayList<DataInputParameter<String>>());
+	this.setResult(new MetadataDataOutputParameter(DEFAULT_RESULT_METADATA_KEY));
+  }
   
   @Override
   public void doService(AdaptrisMessage msg) throws ServiceException {

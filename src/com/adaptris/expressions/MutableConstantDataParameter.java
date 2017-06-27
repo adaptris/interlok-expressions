@@ -36,14 +36,14 @@ public class MutableConstantDataParameter implements DataDestination<String, Str
   private String name;
 
   public MutableConstantDataParameter() {
-    mutableValues = new HashMap<String, String>();
+    setMutableValues(new HashMap<String, String>());
   }
   
   @Override
   public String extract(InterlokMessage m) throws InterlokException {
     String returnedValue = mutableValues.get(this.getName());
     if(returnedValue == null) {
-      mutableValues.put(this.getName(), this.getStartingValue());
+      getMutableValues().put(this.getName(), this.getStartingValue());
       returnedValue = this.getStartingValue();
       log.trace("Mutable constant ({}) has been updated to value {}.", this.getName(), returnedValue);
     }
@@ -65,11 +65,11 @@ public class MutableConstantDataParameter implements DataDestination<String, Str
     this.startingValue = constantValue;
   }
 
-  public static Map<String, String> getMutableValues() {
+  static Map<String, String> getMutableValues() {
     return mutableValues;
   }
 
-  public static void setMutableValues(Map<String, String> mutableValues) {
+  static void setMutableValues(Map<String, String> mutableValues) {
     MutableConstantDataParameter.mutableValues = mutableValues;
   }
 
