@@ -6,6 +6,7 @@ import java.util.List;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.DefaultMessageFactory;
+import com.adaptris.core.ServiceCase;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.common.ConstantDataInputParameter;
 import com.adaptris.core.common.MetadataDataInputParameter;
@@ -13,10 +14,12 @@ import com.adaptris.core.common.MetadataDataOutputParameter;
 import com.adaptris.core.util.LifecycleHelper;
 import com.adaptris.interlok.config.DataInputParameter;
 
-import junit.framework.TestCase;
-
-public class ExpresssionServiceTest extends TestCase {
+public class ExpresssionServiceTest extends ServiceCase {
   
+  public ExpresssionServiceTest(String name) {
+    super(name);
+  }
+
   private ExpressionService service;
   
   public void setUp() throws Exception {
@@ -38,14 +41,9 @@ public class ExpresssionServiceTest extends TestCase {
     service.setParameters(parameters);
     service.setAlgorithm("$1+$2");
     
-    startService();
-    
     AdaptrisMessage adaptrisMessage = DefaultMessageFactory.getDefaultInstance().newMessage();
     
-    service.doService(adaptrisMessage);
-    
-    stopService();
-    
+    execute(service, adaptrisMessage);
     assertTrue(service.getResult() instanceof MetadataDataOutputParameter);
     assertEquals("20", adaptrisMessage.getMetadataValue("expressionResult"));
   }
@@ -61,13 +59,10 @@ public class ExpresssionServiceTest extends TestCase {
     service.setParameters(parameters);
     service.setAlgorithm("$1+$2");
     
-    startService();
-    
     try {
-      service.doService(DefaultMessageFactory.getDefaultInstance().newMessage());
+      execute(service, DefaultMessageFactory.getDefaultInstance().newMessage());
       fail("Should fail because the parameters are not numbers.");
     } catch (ServiceException ex) {
-      stopService();
       // expected
     }
   }
@@ -84,13 +79,9 @@ public class ExpresssionServiceTest extends TestCase {
     service.setAlgorithm("$1+$2");
     service.setResult(new MetadataDataOutputParameter("customKey"));
     
-    startService();
-    
     AdaptrisMessage adaptrisMessage = DefaultMessageFactory.getDefaultInstance().newMessage();
     
-    service.doService(adaptrisMessage);
-    
-    stopService();
+    execute(service, adaptrisMessage);
     
     assertEquals("40", adaptrisMessage.getMetadataValue("customKey"));
   }
@@ -104,5 +95,15 @@ public class ExpresssionServiceTest extends TestCase {
   private void startService() throws CoreException {
     LifecycleHelper.init(service);
     LifecycleHelper.start(service);
+  }
+
+  @Override
+  protected Object retrieveObjectForSampleConfig() {
+    ExpressionService service = new ExpressionService();
+    service.setAlgorithm("$1 + $2");
+    service.getParameters().add(new ConstantDataInputParameter("10"));
+    service.getParameters().add(new MetadataDataInputParameter("metadatakey"));
+    return service;
+
   }
 }
