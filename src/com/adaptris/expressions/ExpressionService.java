@@ -1,5 +1,6 @@
 package com.adaptris.expressions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import com.adaptris.core.CoreException;
 import com.adaptris.core.Service;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.ServiceImp;
+import com.adaptris.core.common.MetadataDataOutputParameter;
 import com.adaptris.interlok.InterlokException;
 import com.adaptris.interlok.config.DataInputParameter;
 import com.adaptris.interlok.config.DataOutputParameter;
@@ -29,7 +31,8 @@ import bsh.Interpreter;
  * To specify the parameters for the algorithm simply use as many {@link DataInputParameter}'s as required.
  * </p>
  * <p>
- * To choose where to set the result of the algorithm use any single {@link DataOutputParameter}.
+ * To choose where to set the result of the algorithm use any single {@link DataOutputParameter}.<br />
+ * The default result of the expression will be a new metadata item with the key "expressionResult".
  * </p>
  * <p>
  * When configuring your algorithm you can specify parameters using the dollar + index (starting at 1) of the configured input parameter; "$1, $2, $3..."
@@ -71,12 +74,19 @@ import bsh.Interpreter;
 public class ExpressionService extends ServiceImp {
   
   protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
+  
+  private static final String DEFAULT_RESULT_METADATA_KEY = "expressionResult";
 
-  private DataOutputParameter<String> output;
+  private DataOutputParameter<String> result;
   
   private String algorithm;
   
   private List<DataInputParameter<String>> parameters;
+  
+  public ExpressionService() {
+	this.setParameters(new ArrayList<DataInputParameter<String>>());
+	this.setResult(new MetadataDataOutputParameter(DEFAULT_RESULT_METADATA_KEY));
+  }
   
   @Override
   public void doService(AdaptrisMessage msg) throws ServiceException {
@@ -98,10 +108,10 @@ public class ExpressionService extends ServiceImp {
   
       interpreter.eval("result = (" + this.getAlgorithm() + ")");
       
-      String result = String.format("%.0f", interpreter.get("result"));
-      log.trace(this.getAlgorithm() + " evaluated to :" + result);
+      String stringResult = String.format("%.0f", interpreter.get("result"));
+      log.trace(this.getAlgorithm() + " evaluated to :" + stringResult);
       
-      output.insert(result, msg);
+      result.insert(stringResult, msg);
     } catch (InterlokException | EvalError  ex) {
       throw new ServiceException(ex);
     }
@@ -119,12 +129,12 @@ public class ExpressionService extends ServiceImp {
   protected void closeService() {
   }
 
-  public DataOutputParameter<String> getOutput() {
-    return output;
+  public DataOutputParameter<String> getResult() {
+    return result;
   }
 
-  public void setOutput(DataOutputParameter<String> output) {
-    this.output = output;
+  public void setResult(DataOutputParameter<String> output) {
+    this.result = output;
   }
 
   public List<DataInputParameter<String>> getParameters() {
