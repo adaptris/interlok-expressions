@@ -12,8 +12,6 @@ build.properties
 *.iml
 *.iws
 *.class
-
-# Project artefacts from building.
 cobertura.ser
 jacoco.exec
 junit.log
@@ -26,3 +24,5 @@ log4j.properties
 *.orig
 target
 bin
+.gradle
+gradle.properties
