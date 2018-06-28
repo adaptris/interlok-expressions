@@ -1,3 +1,0 @@
-junit.ProducerCase.baseDir=${basedir}/build/example-xml
-junit.ServiceCase.baseDir=${basedir}/build/example-xml
-junit.ConsumerCase.baseDir=${basedir}/build/example-xml

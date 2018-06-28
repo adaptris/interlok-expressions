@@ -1,3 +1,19 @@
+/*
+    Copyright Adaptris Ltd
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
 package com.adaptris.expressions;
 
 import java.util.ArrayList;
@@ -14,12 +30,10 @@ import com.adaptris.core.Service;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.ServiceImp;
 import com.adaptris.core.common.MetadataDataOutputParameter;
-import com.adaptris.interlok.InterlokException;
 import com.adaptris.interlok.config.DataInputParameter;
 import com.adaptris.interlok.config.DataOutputParameter;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-import bsh.EvalError;
 import bsh.Interpreter;
 
 /**
@@ -64,6 +78,22 @@ import bsh.Interpreter;
  * In this case we will take the constant configured input value of "1000" and multiple it by the numerical value of the metadata item named "key1", before finally
  * dividing the result by the numerical value of the metadata item named "key2".
  * </p>
+ * <p>
+ * Additionally you can also perform boolean calculations.  To do this, you will need to override the result-formatter.  By default we use {@link NumericalResultFormatter}, for algorithms
+ * that return true or false, you will need to set the result-formatter to boolean-result-formatter ({@link BooleanResultFormatter})
+ * </p> 
+ * <p>
+ * Then your algorithm can test and return boolean values.  A few examples; <br/>
+ * <pre>
+ *     ($1 > $2)
+ * </pre>
+ * <pre>
+ *     ($1 <= $2)
+ * </pre>
+ * <pre>
+ *     ($1.equals($2))
+ * </pre>
+ * </p>
  * 
  * @config expression-service
  * 
@@ -83,9 +113,12 @@ public class ExpressionService extends ServiceImp {
   
   private List<DataInputParameter<String>> parameters;
   
+  private ResultFormatter resultFormatter;
+  
   public ExpressionService() {
 	this.setParameters(new ArrayList<DataInputParameter<String>>());
 	this.setResult(new MetadataDataOutputParameter(DEFAULT_RESULT_METADATA_KEY));
+	this.setResultFormatter(new NumericalResultFormatter());
   }
   
   @Override
@@ -108,11 +141,11 @@ public class ExpressionService extends ServiceImp {
   
       interpreter.eval("result = (" + this.getAlgorithm() + ")");
       
-      String stringResult = String.format("%.0f", interpreter.get("result"));
+      String stringResult = this.getResultFormatter().format(interpreter.get("result"));
       log.trace(this.getAlgorithm() + " evaluated to :" + stringResult);
       
       result.insert(stringResult, msg);
-    } catch (InterlokException | EvalError  ex) {
+    } catch (Exception ex) {
       throw new ServiceException(ex);
     }
   }
@@ -151,6 +184,14 @@ public class ExpressionService extends ServiceImp {
 
   public void setAlgorithm(String algorithm) {
     this.algorithm = algorithm;
+  }
+
+  public ResultFormatter getResultFormatter() {
+    return resultFormatter;
+  }
+
+  public void setResultFormatter(ResultFormatter resultFormatter) {
+    this.resultFormatter = resultFormatter;
   }
 
 }
