@@ -16,9 +16,6 @@
 
 package com.adaptris.expressions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.core.AdaptrisMessage;
@@ -84,8 +81,6 @@ import bsh.Interpreter;
 @AdapterComponent
 @ComponentProfile(summary = "A service that allows you to evaluate a mathematical/boolean algorithm without specifying parameters.", tag = "service,expressions")
 public class FreeFormExpressionService extends ServiceImp {
-
-  protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
   
   private static final String DEFAULT_RESULT_METADATA_KEY = "expressionResult";
 
