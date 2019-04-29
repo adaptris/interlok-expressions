@@ -19,9 +19,6 @@ package com.adaptris.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.core.AdaptrisMessage;
@@ -54,7 +51,7 @@ import bsh.Interpreter;
  * <p>
  * An example:<br />
  * if you have configured 3 input parameters; a constant parameter and 2 metadata parameters in this order;
- * 
+ *
  * <pre>
  *   <parameters>
  *       <constant-data-input-parameter>
@@ -68,20 +65,20 @@ import bsh.Interpreter;
  *       </metadata-data-input-parameter>
  *   </parameters>
  * </pre>
- * 
+ *
  * Then your algorithm may target those parameters by index like this;
- * 
+ *
  * <pre>
  *     ((($1 * $2) + 10) / $3)
  * </pre>
- * 
+ *
  * In this case we will take the constant configured input value of "1000" and multiple it by the numerical value of the metadata item named "key1", before finally
  * dividing the result by the numerical value of the metadata item named "key2".
  * </p>
  * <p>
  * Additionally you can also perform boolean calculations.  To do this, you will need to override the result-formatter.  By default we use {@link NumericalResultFormatter}, for algorithms
  * that return true or false, you will need to set the result-formatter to boolean-result-formatter ({@link BooleanResultFormatter})
- * </p> 
+ * </p>
  * <p>
  * Then your algorithm can test and return boolean values.  A few examples; <br/>
  * <pre>
@@ -94,37 +91,35 @@ import bsh.Interpreter;
  *     ($1.equals($2))
  * </pre>
  * </p>
- * 
+ *
  * @config expression-service
- * 
+ *
  */
 @XStreamAlias("expression-service")
 @AdapterComponent
 @ComponentProfile(summary = "A service that allows you to evaluate a mathematical algorithm.", tag = "service,expressions")
 public class ExpressionService extends ServiceImp {
-  
-  protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
-  
+
   private static final String DEFAULT_RESULT_METADATA_KEY = "expressionResult";
 
   private DataOutputParameter<String> result;
-  
+
   private String algorithm;
-  
+
   private List<DataInputParameter<String>> parameters;
-  
+
   private ResultFormatter resultFormatter;
-  
+
   public ExpressionService() {
 	this.setParameters(new ArrayList<DataInputParameter<String>>());
 	this.setResult(new MetadataDataOutputParameter(DEFAULT_RESULT_METADATA_KEY));
 	this.setResultFormatter(new NumericalResultFormatter());
   }
-  
+
   @Override
   public void doService(AdaptrisMessage msg) throws ServiceException {
     Interpreter interpreter = new Interpreter();
-    
+
     try {
       for(int counter = 0; counter < this.getParameters().size(); counter ++) {
         Double extractedValue = null;
@@ -138,12 +133,12 @@ public class ExpressionService extends ServiceImp {
         }
         interpreter.set("$" + (counter + 1), extractedValue);
       }
-  
+
       interpreter.eval("result = (" + this.getAlgorithm() + ")");
-      
+
       String stringResult = this.getResultFormatter().format(interpreter.get("result"));
       log.trace(this.getAlgorithm() + " evaluated to :" + stringResult);
-      
+
       result.insert(stringResult, msg);
     } catch (Exception ex) {
       throw new ServiceException(ex);
