@@ -74,7 +74,7 @@ import bsh.Interpreter;
  * </pre>
  * </p>
  * 
- * @config expression-service
+ * @config freeform-expression-service
  * 
  */
 @XStreamAlias("freeform-expression-service")
