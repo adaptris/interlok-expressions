@@ -18,14 +18,15 @@ package com.adaptris.expressions;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.DefaultMessageFactory;
 import com.adaptris.core.common.ConstantDataInputParameter;
 import com.adaptris.core.util.LifecycleHelper;
 import com.adaptris.interlok.config.DataInputParameter;
-
 import junit.framework.TestCase;
 
 public class MutableConstantDataParameterTest extends TestCase {
@@ -33,6 +34,7 @@ public class MutableConstantDataParameterTest extends TestCase {
   private MutableConstantDataParameter mutableConstantDataParameterOne;
   private MutableConstantDataParameter mutableConstantDataParameterTwo;
   
+  @Before
   public void setUp() throws Exception {
     mutableConstantDataParameterOne = new MutableConstantDataParameter();
     mutableConstantDataParameterOne.setName("OutputOne");
@@ -43,10 +45,11 @@ public class MutableConstantDataParameterTest extends TestCase {
     mutableConstantDataParameterTwo.setStartingValue("100");
   }
   
+  @After
   public void tearDown() throws Exception {
-    
   }
   
+  @Test
   public void testMutableAcrossServiceInvocations() throws Exception {
     
     this.doExpressionService(mutableConstantDataParameterOne);
@@ -75,6 +78,7 @@ public class MutableConstantDataParameterTest extends TestCase {
     assertEquals("60", result); 
   }
   
+  @Test
   public void testMultipleMutableAcrossServiceInvocations() throws Exception {
     this.doExpressionService(mutableConstantDataParameterOne);
     

@@ -16,6 +16,12 @@
 
 package com.adaptris.expressions;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.DefaultMessageFactory;
 import com.adaptris.core.ServiceCase;
@@ -24,20 +30,23 @@ import com.adaptris.core.common.MetadataDataOutputParameter;
 
 public class FreeFormExpressionServiceTest extends ServiceCase {
   
-  public FreeFormExpressionServiceTest(String name) {
-    super(name);
+  public FreeFormExpressionServiceTest() {
+    super();
   }
 
   private FreeFormExpressionService service;
   
+  @Before
   public void setUp() throws Exception {
     service = new FreeFormExpressionService();
   }
 
+  @After
   public void tearDown() throws Exception {
     
   }
   
+  @Test
   public void testSimpleAlgorithmDefaultResultMetadataKey() throws Exception {
     service.setAlgorithm("10+10");
     
@@ -48,6 +57,7 @@ public class FreeFormExpressionServiceTest extends ServiceCase {
     assertEquals("20", adaptrisMessage.getMetadataValue("expressionResult"));
   }
 
+  @Test
   public void testInvalidFormat() throws Exception {
     service.setAlgorithm("x+x");
     
@@ -59,6 +69,7 @@ public class FreeFormExpressionServiceTest extends ServiceCase {
     }
   }
   
+  @Test
   public void testCustomResult() throws Exception {
     service.setAlgorithm("20 + 20");
     service.setResult(new MetadataDataOutputParameter("customKey"));
@@ -70,6 +81,7 @@ public class FreeFormExpressionServiceTest extends ServiceCase {
     assertEquals("40", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testBooleanEqualsResult() throws Exception {
     service.setAlgorithm("20 == 20");
     service.setResult(new MetadataDataOutputParameter("customKey"));
@@ -80,7 +92,8 @@ public class FreeFormExpressionServiceTest extends ServiceCase {
     
     assertEquals("true", adaptrisMessage.getMetadataValue("customKey"));
   }
-  
+ 
+  @Test
   public void testBooleanEqualsResolveResult() throws Exception {
     service.setResult(new MetadataDataOutputParameter("customKey"));
     
@@ -95,6 +108,7 @@ public class FreeFormExpressionServiceTest extends ServiceCase {
     assertEquals("true", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testComplexBooleanEqualsResolveResult() throws Exception {
     service.setResult(new MetadataDataOutputParameter("customKey"));
     
@@ -109,6 +123,7 @@ public class FreeFormExpressionServiceTest extends ServiceCase {
     assertEquals("true", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testComplexBooleanNotEqualsResolveResult() throws Exception {
     service.setResult(new MetadataDataOutputParameter("customKey"));
     
@@ -123,6 +138,7 @@ public class FreeFormExpressionServiceTest extends ServiceCase {
     assertEquals("false", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testBooleanNotEqualsResolveResult() throws Exception {
     service.setResult(new MetadataDataOutputParameter("customKey"));
     
@@ -137,6 +153,7 @@ public class FreeFormExpressionServiceTest extends ServiceCase {
     assertEquals("false", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testBooleanNotEqualsResult() throws Exception {
     service.setAlgorithm("50 == 20");
     service.setResult(new MetadataDataOutputParameter("customKey"));
@@ -148,6 +165,7 @@ public class FreeFormExpressionServiceTest extends ServiceCase {
     assertEquals("false", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testBooleanGreaterResolveResult() throws Exception {
     service.setResult(new MetadataDataOutputParameter("customKey"));
     
@@ -162,6 +180,7 @@ public class FreeFormExpressionServiceTest extends ServiceCase {
     assertEquals("true", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testBooleanGreaterResult() throws Exception {
     service.setAlgorithm("30 > 20");
     service.setResult(new MetadataDataOutputParameter("customKey"));
@@ -173,6 +192,7 @@ public class FreeFormExpressionServiceTest extends ServiceCase {
     assertEquals("true", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testBooleanNotGreaterResult() throws Exception {
     service.setAlgorithm("10 > 20");
     service.setResult(new MetadataDataOutputParameter("customKey"));
@@ -184,6 +204,7 @@ public class FreeFormExpressionServiceTest extends ServiceCase {
     assertEquals("false", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testBooleanLessResult() throws Exception {
     service.setAlgorithm("10 < 20");
     service.setResult(new MetadataDataOutputParameter("customKey"));
@@ -195,6 +216,7 @@ public class FreeFormExpressionServiceTest extends ServiceCase {
     assertEquals("true", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testBooleanNotLessResult() throws Exception {
     service.setAlgorithm("30 < 20");
     service.setResult(new MetadataDataOutputParameter("customKey"));
@@ -214,4 +236,10 @@ public class FreeFormExpressionServiceTest extends ServiceCase {
     return service;
 
   }
+  
+  @Override
+  public boolean isAnnotatedForJunit4() {
+    return true;
+  }
+  
 }

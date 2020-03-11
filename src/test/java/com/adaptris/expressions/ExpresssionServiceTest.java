@@ -16,9 +16,14 @@
 
 package com.adaptris.expressions;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.DefaultMessageFactory;
 import com.adaptris.core.ServiceCase;
@@ -30,20 +35,23 @@ import com.adaptris.interlok.config.DataInputParameter;
 
 public class ExpresssionServiceTest extends ServiceCase {
   
-  public ExpresssionServiceTest(String name) {
-    super(name);
+  public ExpresssionServiceTest() {
+    super();
   }
 
   private ExpressionService service;
   
+  @Before
   public void setUp() throws Exception {
     service = new ExpressionService();
   }
 
+  @After
   public void tearDown() throws Exception {
     
   }
   
+  @Test
   public void testSimpleAlgorithmDefaultResultMetadataKey() throws Exception {
     ConstantDataInputParameter constantDataInputParameterOne = new ConstantDataInputParameter("10");
     ConstantDataInputParameter constantDataInputParameterTwo = new ConstantDataInputParameter("10");
@@ -62,6 +70,7 @@ public class ExpresssionServiceTest extends ServiceCase {
     assertEquals("20", adaptrisMessage.getMetadataValue("expressionResult"));
   }
 
+  @Test
   public void testInvalidFormat() throws Exception {
     ConstantDataInputParameter constantDataInputParameterOne = new ConstantDataInputParameter("x");
     ConstantDataInputParameter constantDataInputParameterTwo = new ConstantDataInputParameter("x");
@@ -81,6 +90,7 @@ public class ExpresssionServiceTest extends ServiceCase {
     }
   }
   
+  @Test
   public void testCustomResult() throws Exception {
     ConstantDataInputParameter constantDataInputParameterOne = new ConstantDataInputParameter("20");
     ConstantDataInputParameter constantDataInputParameterTwo = new ConstantDataInputParameter("20");
@@ -100,6 +110,7 @@ public class ExpresssionServiceTest extends ServiceCase {
     assertEquals("40", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testBooleanEqualsResult() throws Exception {
     ConstantDataInputParameter constantDataInputParameterOne = new ConstantDataInputParameter("20");
     ConstantDataInputParameter constantDataInputParameterTwo = new ConstantDataInputParameter("20");
@@ -120,6 +131,7 @@ public class ExpresssionServiceTest extends ServiceCase {
     assertEquals("true", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testBooleanNotEqualsResult() throws Exception {
     ConstantDataInputParameter constantDataInputParameterOne = new ConstantDataInputParameter("50");
     ConstantDataInputParameter constantDataInputParameterTwo = new ConstantDataInputParameter("20");
@@ -140,6 +152,7 @@ public class ExpresssionServiceTest extends ServiceCase {
     assertEquals("false", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testBooleanGreaterResult() throws Exception {
     ConstantDataInputParameter constantDataInputParameterOne = new ConstantDataInputParameter("30");
     ConstantDataInputParameter constantDataInputParameterTwo = new ConstantDataInputParameter("20");
@@ -160,6 +173,7 @@ public class ExpresssionServiceTest extends ServiceCase {
     assertEquals("true", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testBooleanNotGreaterResult() throws Exception {
     ConstantDataInputParameter constantDataInputParameterOne = new ConstantDataInputParameter("10");
     ConstantDataInputParameter constantDataInputParameterTwo = new ConstantDataInputParameter("20");
@@ -180,6 +194,7 @@ public class ExpresssionServiceTest extends ServiceCase {
     assertEquals("false", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testBooleanLessResult() throws Exception {
     ConstantDataInputParameter constantDataInputParameterOne = new ConstantDataInputParameter("10");
     ConstantDataInputParameter constantDataInputParameterTwo = new ConstantDataInputParameter("20");
@@ -200,6 +215,7 @@ public class ExpresssionServiceTest extends ServiceCase {
     assertEquals("true", adaptrisMessage.getMetadataValue("customKey"));
   }
   
+  @Test
   public void testBooleanNotLessResult() throws Exception {
     ConstantDataInputParameter constantDataInputParameterOne = new ConstantDataInputParameter("30");
     ConstantDataInputParameter constantDataInputParameterTwo = new ConstantDataInputParameter("20");
@@ -229,4 +245,9 @@ public class ExpresssionServiceTest extends ServiceCase {
     return service;
 
   }
+  
+  @Override
+  public boolean isAnnotatedForJunit4() {
+    return true;
+  }  
 }
