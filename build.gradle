@@ -209,6 +209,7 @@ publishing {
         properties.appendNode("target", "3.6.4+")
         properties.appendNode("license", "false")
         properties.appendNode("tags", "expressions")
+        properties.appendNode("repository", "https://github.com/adaptris/interlok-expressions")
       }
     }
   }
