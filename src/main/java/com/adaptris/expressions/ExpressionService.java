@@ -53,17 +53,17 @@ import bsh.Interpreter;
  * if you have configured 3 input parameters; a constant parameter and 2 metadata parameters in this order;
  *
  * <pre>
- *   <parameters>
- *       <constant-data-input-parameter>
- *           <value>1000</value>
- *       </constant-data-input-parameter>
- *       <metadata-data-input-parameter>
- *           <metadata-key>key1</metadata-key>
- *       </metadata-data-input-parameter>
- *       <metadata-data-input-parameter>
- *           <metadata-key>key2</metadata-key>
- *       </metadata-data-input-parameter>
- *   </parameters>
+ *   &lt;parameters&gt;
+ *       &lt;constant-data-input-parameter&gt;
+ *           &lt;value&gt;1000&lt;/value&gt;
+ *       &lt;/constant-data-input-parameter&gt;
+ *       &lt;metadata-data-input-parameter&gt;
+ *           &lt;metadata-key&gt;key1&lt;/metadata-key&gt;
+ *       &lt;/metadata-data-input-parameter&gt;
+ *       &lt;metadata-data-input-parameter&gt;
+ *           &lt;metadata-key&gt;key2&lt;/metadata-key&gt;
+ *       &lt;/metadata-data-input-parameter&gt;
+ *   &lt;/parameters&gt;
  * </pre>
  *
  * Then your algorithm may target those parameters by index like this;
