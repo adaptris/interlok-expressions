@@ -46,7 +46,8 @@ import bsh.Interpreter;
  * The default result of the expression will be a new metadata item with the key "expressionResult".
  * </p>
  * <p>
- * When configuring your algorithm you can specify parameters using the dollar + index (starting at 1) of the configured input parameter; "$1, $2, $3..."
+ * When configuring your algorithm you can specify parameters using the dollar + index (starting at 1) of the configured input parameter;
+ * "$1, $2, $3..."
  * </p>
  * <p>
  * An example:<br />
@@ -69,26 +70,30 @@ import bsh.Interpreter;
  * Then your algorithm may target those parameters by index like this;
  *
  * <pre>
- *     ((($1 * $2) + 10) / $3)
+ * ((($1 * $2) + 10) / $3)
  * </pre>
  *
- * In this case we will take the constant configured input value of "1000" and multiple it by the numerical value of the metadata item named "key1", before finally
- * dividing the result by the numerical value of the metadata item named "key2".
+ * In this case we will take the constant configured input value of "1000" and multiple it by the numerical value of the metadata item named
+ * "key1", before finally dividing the result by the numerical value of the metadata item named "key2".
  * </p>
  * <p>
- * Additionally you can also perform boolean calculations.  To do this, you will need to override the result-formatter.  By default we use {@link NumericalResultFormatter}, for algorithms
- * that return true or false, you will need to set the result-formatter to boolean-result-formatter ({@link BooleanResultFormatter})
+ * Additionally you can also perform boolean calculations. To do this, you will need to override the result-formatter. By default we use
+ * {@link NumericalResultFormatter}, for algorithms that return true or false, you will need to set the result-formatter to
+ * boolean-result-formatter ({@link BooleanResultFormatter})
  * </p>
  * <p>
- * Then your algorithm can test and return boolean values.  A few examples; <br/>
+ * Then your algorithm can test and return boolean values. A few examples; <br/>
+ *
  * <pre>
- *     ($1 > $2)
+ * ($1 > $2)
  * </pre>
+ *
  * <pre>
- *     ($1 <= $2)
+ * ($1 <= $2)
  * </pre>
+ *
  * <pre>
- *     ($1.equals($2))
+ * ($1.equals($2))
  * </pre>
  * </p>
  *
@@ -111,9 +116,9 @@ public class ExpressionService extends ServiceImp {
   private ResultFormatter resultFormatter;
 
   public ExpressionService() {
-	this.setParameters(new ArrayList<DataInputParameter<String>>());
-	this.setResult(new MetadataDataOutputParameter(DEFAULT_RESULT_METADATA_KEY));
-	this.setResultFormatter(new NumericalResultFormatter());
+    setParameters(new ArrayList<DataInputParameter<String>>());
+    setResult(new MetadataDataOutputParameter(DEFAULT_RESULT_METADATA_KEY));
+    setResultFormatter(new NumericalResultFormatter());
   }
 
   @Override
@@ -121,12 +126,12 @@ public class ExpressionService extends ServiceImp {
     Interpreter interpreter = new Interpreter();
 
     try {
-      for(int counter = 0; counter < this.getParameters().size(); counter ++) {
+      for (int counter = 0; counter < getParameters().size(); counter++) {
         Double extractedValue = null;
-        String extractedString = this.getParameters().get(counter).extract(msg);
+        String extractedString = getParameters().get(counter).extract(msg);
         log.trace("Parameter value extracted: {}", extractedString);
         try {
-          extractedValue = new Double(extractedString);
+          extractedValue = Double.valueOf(extractedString);
         } catch (NumberFormatException ex) {
           log.error("Cannot convert your input data into a number: " + extractedString);
           throw new ServiceException(ex);
@@ -134,10 +139,10 @@ public class ExpressionService extends ServiceImp {
         interpreter.set("$" + (counter + 1), extractedValue);
       }
 
-      interpreter.eval("result = (" + this.getAlgorithm() + ")");
+      interpreter.eval("result = (" + getAlgorithm() + ")");
 
-      String stringResult = this.getResultFormatter().format(interpreter.get("result"));
-      log.trace(this.getAlgorithm() + " evaluated to :" + stringResult);
+      String stringResult = getResultFormatter().format(interpreter.get("result"));
+      log.trace(getAlgorithm() + " evaluated to :" + stringResult);
 
       result.insert(stringResult, msg);
     } catch (Exception ex) {
@@ -162,7 +167,7 @@ public class ExpressionService extends ServiceImp {
   }
 
   public void setResult(DataOutputParameter<String> output) {
-    this.result = output;
+    result = output;
   }
 
   public List<DataInputParameter<String>> getParameters() {
