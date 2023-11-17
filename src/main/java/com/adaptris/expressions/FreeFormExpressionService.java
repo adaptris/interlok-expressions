@@ -35,8 +35,9 @@ import bsh.Interpreter;
  * Implementation of {@link Service} that allows you to configure a mathematical/boolean algorithm<br/>
  * </p>
  * <p>
- * The major difference between this service and the standard {@link ExpressionService} is simply that this service does not require any {@link DataInputParameter}'s to be configured.
- * Instead you simply use static values in your algorithm, which includes the ability to use the {@link AdaptrisMessage.resolve()}. 
+ * The major difference between this service and the standard {@link ExpressionService} is simply that this service does not require any
+ * {@link DataInputParameter}'s to be configured. Instead you simply use static values in your algorithm, which includes the ability to use
+ * the {@link AdaptrisMessage.resolve()}.
  * </p>
  * <p>
  * To choose where to set the result of the algorithm use any single {@link DataOutputParameter}.<br />
@@ -45,62 +46,70 @@ import bsh.Interpreter;
  * <p>
  * An example:<br />
  * A static algorithm such as the following;
- * 
+ *
  * <pre>
- *   ((10 * 10) * 10)
+ * ((10 * 10) * 10)
  * </pre>
+ *
  * Will produce the result 1000
  * </p>
  * <p>
  * A further example using the AdaptrisMessage.resolve() function allows us to create algorithms where the values are stored in metadata;
+ *
  * <pre>
  *   ((%message{key1} * %message{key2}) * %message{key3})
  * </pre>
- * Lets assume that the values for the metadata items identified by the keys 'key1', 'key2' and 'key3' are all "10", then again the result will be 1000.
+ *
+ * Lets assume that the values for the metadata items identified by the keys 'key1', 'key2' and 'key3' are all "10", then again the result
+ * will be 1000.
  * </p>
  * <p>
  * Additionally you can also perform boolean calculations. A few examples; <br/>
+ *
  * <pre>
- *     (10 > 5)
+ * (10 > 5)
  * </pre>
+ *
  * <pre>
  *     (%message{key1} <= 50)
  * </pre>
+ *
  * <pre>
  *     (%message{key1} == %message{key2})
  * </pre>
+ *
  * <pre>
  *     ((%message{key1} - 50 ) == %message{key2})
  * </pre>
  * </p>
- * 
+ *
  * @config freeform-expression-service
- * 
+ *
  */
 @XStreamAlias("freeform-expression-service")
 @AdapterComponent
 @ComponentProfile(summary = "A service that allows you to evaluate a mathematical/boolean algorithm without specifying parameters.", tag = "service,expressions")
 public class FreeFormExpressionService extends ServiceImp {
-  
+
   private static final String DEFAULT_RESULT_METADATA_KEY = "expressionResult";
 
   private DataOutputParameter<String> result;
-  
+
   private String algorithm;
-  
+
   public FreeFormExpressionService() {
-    this.setResult(new MetadataDataOutputParameter(DEFAULT_RESULT_METADATA_KEY));
+    setResult(new MetadataDataOutputParameter(DEFAULT_RESULT_METADATA_KEY));
   }
-  
+
   @Override
   public void doService(AdaptrisMessage msg) throws ServiceException {
     try {
       Interpreter interpreter = new Interpreter();
-      interpreter.eval("result = (" + msg.resolve(this.getAlgorithm()) + ")");
-      
+      interpreter.eval("result = (" + msg.resolve(getAlgorithm()) + ")");
+
       String stringResult = interpreter.get("result").toString();
-      log.trace(this.getAlgorithm() + " evaluated to :" + stringResult);
-      
+      log.trace(getAlgorithm() + " evaluated to :" + stringResult);
+
       result.insert(stringResult, msg);
     } catch (Exception ex) {
       throw new ServiceException(ex);
@@ -134,4 +143,5 @@ public class FreeFormExpressionService extends ServiceImp {
   public void setAlgorithm(String algorithm) {
     this.algorithm = algorithm;
   }
+
 }
