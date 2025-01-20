@@ -26,6 +26,8 @@ import com.adaptris.core.CoreException;
 import com.adaptris.core.Service;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.ServiceImp;
+import com.adaptris.core.util.InputFieldExpression;
+import org.apache.commons.lang3.StringUtils;
 import com.adaptris.core.common.MetadataDataOutputParameter;
 import com.adaptris.interlok.config.DataInputParameter;
 import com.adaptris.interlok.config.DataOutputParameter;
@@ -77,6 +79,16 @@ import bsh.Interpreter;
  * "key1", before finally dividing the result by the numerical value of the metadata item named "key2".
  * </p>
  * <p>
+ * A further example using the AdaptrisMessage.resolve() function allows us to create algorithms where the values are stored in metadata;
+ *
+ * <pre>
+ *   ((%message{key1} * %message{key2}) * %message{key3})
+ * </pre>
+ *
+ * Lets assume that the values for the metadata items identified by the keys 'key1', 'key2' and 'key3' are all "10", then again the result
+ * will be 1000.
+ * </p>
+ * <p>
  * Additionally you can also perform boolean calculations. To do this, you will need to override the result-formatter. By default we use
  * {@link NumericalResultFormatter}, for algorithms that return true or false, you will need to set the result-formatter to
  * boolean-result-formatter ({@link BooleanResultFormatter})
@@ -124,6 +136,7 @@ public class ExpressionService extends ServiceImp {
   @Override
   public void doService(AdaptrisMessage msg) throws ServiceException {
     Interpreter interpreter = new Interpreter();
+    String algorithm = getAlgorithm();
 
     try {
       for (int counter = 0; counter < getParameters().size(); counter++) {
@@ -139,10 +152,15 @@ public class ExpressionService extends ServiceImp {
         interpreter.set("$" + (counter + 1), extractedValue);
       }
 
-      interpreter.eval("result = (" + getAlgorithm() + ")");
+      //Check and evaluate if algorithm is an expression
+      if(StringUtils.isNotBlank(algorithm) && InputFieldExpression.isExpression(algorithm)) {
+        algorithm = msg.resolve(algorithm);
+      }
+
+      interpreter.eval("result = (" + algorithm + ")");
 
       String stringResult = getResultFormatter().format(interpreter.get("result"));
-      log.trace(getAlgorithm() + " evaluated to :" + stringResult);
+      log.trace(algorithm + " evaluated to :" + stringResult);
 
       result.insert(stringResult, msg);
     } catch (Exception ex) {
