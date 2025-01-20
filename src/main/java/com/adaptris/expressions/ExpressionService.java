@@ -153,7 +153,7 @@ public class ExpressionService extends ServiceImp {
       }
 
       //Check and evaluate if algorithm is an expression
-      if(StringUtils.isNotBlank(algorithm) && InputFieldExpression.isExpression(algorithm)) {
+      if(InputFieldExpression.isExpression(algorithm)) {
         algorithm = msg.resolve(algorithm);
       }
 
