@@ -19,6 +19,8 @@ package com.adaptris.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.adaptris.annotation.InputFieldHint;
+import javax.validation.constraints.NotBlank;
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.core.AdaptrisMessage;
@@ -121,6 +123,8 @@ public class ExpressionService extends ServiceImp {
 
   private DataOutputParameter<String> result;
 
+  @NotBlank
+  @InputFieldHint(expression = true)
   private String algorithm;
 
   private List<DataInputParameter<String>> parameters;
