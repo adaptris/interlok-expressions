@@ -125,6 +125,25 @@ public class ExpresssionServiceTest extends ExampleServiceCase {
   }
 
   @Test
+  public void testBooleanEqualsResolveResult() throws Exception {
+    List<DataInputParameter<String>> parameters = new ArrayList<>();
+
+    service.setParameters(parameters);
+    service.setAlgorithm("%message{key1} == %message{key2}");
+    service.setResult(new MetadataDataOutputParameter("customKey"));
+    service.setResultFormatter(new BooleanResultFormatter());
+
+    AdaptrisMessage adaptrisMessage = DefaultMessageFactory.getDefaultInstance().newMessage();
+    adaptrisMessage.addMessageHeader("key1", "20");
+    adaptrisMessage.addMessageHeader("key2", "20");
+
+
+    execute(service, adaptrisMessage);
+
+    assertEquals("true", adaptrisMessage.getMetadataValue("customKey"));
+  }
+
+  @Test
   public void testBooleanNotEqualsResult() throws Exception {
     ConstantDataInputParameter constantDataInputParameterOne = new ConstantDataInputParameter("50");
     ConstantDataInputParameter constantDataInputParameterTwo = new ConstantDataInputParameter("20");
@@ -139,6 +158,25 @@ public class ExpresssionServiceTest extends ExampleServiceCase {
     service.setResultFormatter(new BooleanResultFormatter());
 
     AdaptrisMessage adaptrisMessage = DefaultMessageFactory.getDefaultInstance().newMessage();
+
+    execute(service, adaptrisMessage);
+
+    assertEquals("false", adaptrisMessage.getMetadataValue("customKey"));
+  }
+
+  @Test
+  public void testBooleanNotEqualsResolveResult() throws Exception {
+    List<DataInputParameter<String>> parameters = new ArrayList<>();
+
+    service.setParameters(parameters);
+    service.setAlgorithm("%message{key1} == %message{key2}");
+    service.setResult(new MetadataDataOutputParameter("customKey"));
+    service.setResultFormatter(new BooleanResultFormatter());
+
+    AdaptrisMessage adaptrisMessage = DefaultMessageFactory.getDefaultInstance().newMessage();
+
+    adaptrisMessage.addMessageHeader("key1", "10");
+    adaptrisMessage.addMessageHeader("key2", "20");
 
     execute(service, adaptrisMessage);
 
@@ -167,6 +205,25 @@ public class ExpresssionServiceTest extends ExampleServiceCase {
   }
 
   @Test
+  public void testBooleanGreaterResolveResult() throws Exception {
+    List<DataInputParameter<String>> parameters = new ArrayList<>();
+
+    service.setParameters(parameters);
+    service.setAlgorithm("%message{key1} > %message{key2}");
+    service.setResult(new MetadataDataOutputParameter("customKey"));
+    service.setResultFormatter(new BooleanResultFormatter());
+
+    AdaptrisMessage adaptrisMessage = DefaultMessageFactory.getDefaultInstance().newMessage();
+
+    adaptrisMessage.addMessageHeader("key1", "20");
+    adaptrisMessage.addMessageHeader("key2", "10");
+
+    execute(service, adaptrisMessage);
+
+    assertEquals("true", adaptrisMessage.getMetadataValue("customKey"));
+  }
+
+  @Test
   public void testBooleanNotGreaterResult() throws Exception {
     ConstantDataInputParameter constantDataInputParameterOne = new ConstantDataInputParameter("10");
     ConstantDataInputParameter constantDataInputParameterTwo = new ConstantDataInputParameter("20");
@@ -181,6 +238,25 @@ public class ExpresssionServiceTest extends ExampleServiceCase {
     service.setResultFormatter(new BooleanResultFormatter());
 
     AdaptrisMessage adaptrisMessage = DefaultMessageFactory.getDefaultInstance().newMessage();
+
+    execute(service, adaptrisMessage);
+
+    assertEquals("false", adaptrisMessage.getMetadataValue("customKey"));
+  }
+
+  @Test
+  public void testBooleanNotGreaterResolveResult() throws Exception {
+    List<DataInputParameter<String>> parameters = new ArrayList<>();
+
+    service.setParameters(parameters);
+    service.setAlgorithm("%message{key1} > %message{key2}");
+    service.setResult(new MetadataDataOutputParameter("customKey"));
+    service.setResultFormatter(new BooleanResultFormatter());
+
+    AdaptrisMessage adaptrisMessage = DefaultMessageFactory.getDefaultInstance().newMessage();
+
+    adaptrisMessage.addMessageHeader("key1", "10");
+    adaptrisMessage.addMessageHeader("key2", "20");
 
     execute(service, adaptrisMessage);
 
@@ -209,6 +285,25 @@ public class ExpresssionServiceTest extends ExampleServiceCase {
   }
 
   @Test
+  public void testBooleanLessResolveResult() throws Exception {
+    List<DataInputParameter<String>> parameters = new ArrayList<>();
+
+    service.setParameters(parameters);
+    service.setAlgorithm("%message{key1} < %message{key2}");
+    service.setResult(new MetadataDataOutputParameter("customKey"));
+    service.setResultFormatter(new BooleanResultFormatter());
+
+    AdaptrisMessage adaptrisMessage = DefaultMessageFactory.getDefaultInstance().newMessage();
+
+    adaptrisMessage.addMessageHeader("key1", "10");
+    adaptrisMessage.addMessageHeader("key2", "20");
+
+    execute(service, adaptrisMessage);
+
+    assertEquals("true", adaptrisMessage.getMetadataValue("customKey"));
+  }
+
+  @Test
   public void testBooleanNotLessResult() throws Exception {
     ConstantDataInputParameter constantDataInputParameterOne = new ConstantDataInputParameter("30");
     ConstantDataInputParameter constantDataInputParameterTwo = new ConstantDataInputParameter("20");
@@ -223,6 +318,25 @@ public class ExpresssionServiceTest extends ExampleServiceCase {
     service.setResultFormatter(new BooleanResultFormatter());
 
     AdaptrisMessage adaptrisMessage = DefaultMessageFactory.getDefaultInstance().newMessage();
+
+    execute(service, adaptrisMessage);
+
+    assertEquals("false", adaptrisMessage.getMetadataValue("customKey"));
+  }
+
+  @Test
+  public void testBooleanNotLessResolveResult() throws Exception {
+    List<DataInputParameter<String>> parameters = new ArrayList<>();
+
+    service.setParameters(parameters);
+    service.setAlgorithm("%message{key1} < %message{key2}");
+    service.setResult(new MetadataDataOutputParameter("customKey"));
+    service.setResultFormatter(new BooleanResultFormatter());
+
+    AdaptrisMessage adaptrisMessage = DefaultMessageFactory.getDefaultInstance().newMessage();
+
+    adaptrisMessage.addMessageHeader("key1", "30");
+    adaptrisMessage.addMessageHeader("key2", "20");
 
     execute(service, adaptrisMessage);
 
